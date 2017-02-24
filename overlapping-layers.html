@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        
+        #map {
+            height: 100%;
+        }
+        #overlays {
+            margin: 20px 0 20px 10px;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="overlays">
+    </div>
+    <div id="map"></div>
+    <script>
+        var map,
+        overlays = {},
+        DIMMED_OPACITY = 0.7;
+        function drawListOfOverlays(overlays) {
+            Object.keys(overlays).forEach(function (overlayId) {
+                var label = document.createElement('label');
+                label.setAttribute('for', overlayId);
+                label.innerHTML = overlayId;
+                var input = document.createElement('input');
+                input.id = overlayId;
+                input.type = 'checkbox';
+                input.name = overlayId;
+                input.onclick = function () {
+                    toggleOverlayOpacity(input.checked, overlays[overlayId], 0);
+                };
+                var parent = document.createElement('div');
+                parent.appendChild(label);
+                parent.appendChild(input);
+                document.getElementById('overlays').appendChild(parent);
+            });
+        }
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: {lat: 40.740, lng: -74.18},
+                mapTypeId: 'roadmap'
+            });
+
+            var baseOverlay = new google.maps.GroundOverlay(
+                'https://dummyimage.com/600x400/a300a3/a300a3.png',
+                {
+                    north: 40.773941,
+                    south: 40.75,
+                    east: -74.12544,
+                    west: -74.22655
+                });
+            baseOverlay.setMap(map);
+            
+            var overlayBaseOptions = {
+                map: map,
+                opacity: DIMMED_OPACITY
+            };
+            var overlay1 = new google.maps.GroundOverlay(
+                'https://dummyimage.com/600x400/000000/fff.png&text=overlay1',
+                {
+                    north: 40.773941,
+                    south: 40.75,
+                    east: -74.19,
+                    west: -74.22655
+                },
+                overlayBaseOptions
+            );
+            overlays.overlay1 = overlay1;
+            
+            var overlay2 = new google.maps.GroundOverlay(
+                'https://dummyimage.com/600x400/000000/fff.png&text=overlay2',
+                {
+                    north: 40.773941,
+                    south: 40.75,
+                    east: -74.16,
+                    west: -74.19
+                },
+                overlayBaseOptions
+            );
+            overlays.overlay2 = overlay2;
+
+            var overlay3 = new google.maps.GroundOverlay(
+                'https://dummyimage.com/600x400/000000/fff.png&text=overlay3',
+                {
+                    north: 40.773941,
+                    south: 40.75,
+                    east: -74.12544,
+                    west: -74.16
+                },
+                overlayBaseOptions
+            );
+            overlays.overlay3 = overlay3;
+
+            drawListOfOverlays(overlays);
+        }
+        function toggleOverlayOpacity(checked, overlay, defaultOpacity) {
+            if (checked) {
+                overlay.setOpacity(defaultOpacity);
+            }
+            else {
+                overlay.setOpacity(DIMMED_OPACITY);
+            }
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=API_KEY&callback=initMap">
+    </script>
+</body>
+
+</html>
